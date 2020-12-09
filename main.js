@@ -1,16 +1,14 @@
 const serviceUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
-// const charRXUUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 const charTXUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 const MTU = 15;
 
-let bleDevice;
-let bleServer;
-let nusService;
+let cube;
+let cubeServer;
+let cubeService;
 let rxCharacteristic;
 let txCharacteristic;
 
 let connected = false;
-
 let alg = "";
 
 function connectionToggle()
@@ -39,26 +37,20 @@ async function connect()
 {
     try
     {
-        console.log('Requesting Bluetooth Device...');
+
         let device = await navigator.bluetooth.requestDevice({
             optionalServices: [serviceUUID],
             acceptAllDevices: true
-        })
-
-        bleDevice = device;
-        console.log('Found ' + device.name);
-        console.log('Connecting to GATT Server...');
-        bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+        });
+        cube = device;
         let server = await device.gatt.connect();
 
-        console.log('Locate NUS service');
         let service = await server.getPrimaryService(serviceUUID);
+        cubeService = service;
 
-        nusService = service;
-        console.log('Found NUS service: ' + service.uuid);
 
         console.log('Locate TX characteristic');
-        let txChar = await nusService.getCharacteristic(charTXUUID);
+        let txChar = await cubeService.getCharacteristic(charTXUUID);
 
         txCharacteristic = txChar;
         console.log('Found TX characteristic');
@@ -70,16 +62,15 @@ async function connect()
         txCharacteristic.addEventListener('characteristicvaluechanged',
             handleNotifications);
         connected = true;
-        console.log('\r\n' + bleDevice.name + ' Connected.');
+        console.log('\r\n' + cube.name + ' Connected.');
         setButtonState(true);
     }
     catch (error)
     {
         console.log('' + error);
-        console.log('' + error);
-        if (bleDevice && bleDevice.gatt.connected)
+        if (cube && cube.gatt.connected)
         {
-            bleDevice.gatt.disconnect();
+            cube.gatt.disconnect();
         }
     }
 
@@ -88,28 +79,22 @@ async function connect()
 
 function disconnect()
 {
-    if (!bleDevice)
+    if (!cube)
     {
-        console.log('No Bluetooth Device connected...');
         return;
     }
-    console.log('Disconnecting from Bluetooth Device...');
-    if (bleDevice.gatt.connected)
+    console.log('Disconnecting from cube.');
+    if (cube.gatt.connected)
     {
-        bleDevice.gatt.disconnect();
+        cube.gatt.disconnect();
         connected = false;
         setButtonState(false);
-        console.log('Bluetooth Device connected: ' + bleDevice.gatt.connected);
-    } else
-    {
-        console.log('> Bluetooth Device is already disconnected');
     }
 }
 
 function onDisconnected()
 {
     connected = false;
-    console.log('\r\n' + bleDevice.name + ' Disconnected.');
     setButtonState(false);
 }
 
