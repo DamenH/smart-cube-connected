@@ -37,7 +37,6 @@ async function connect()
 {
     try
     {
-
         let device = await navigator.bluetooth.requestDevice({
             optionalServices: [serviceUUID],
             acceptAllDevices: true
@@ -48,21 +47,12 @@ async function connect()
         let service = await server.getPrimaryService(serviceUUID);
         cubeService = service;
 
-
-        console.log('Locate TX characteristic');
         let txChar = await cubeService.getCharacteristic(charTXUUID);
-
         txCharacteristic = txChar;
-        console.log('Found TX characteristic');
-
-        console.log('Enable notifications');
         await txCharacteristic.startNotifications();
-
-        console.log('Notifications started');
         txCharacteristic.addEventListener('characteristicvaluechanged',
             handleNotifications);
         connected = true;
-        console.log('\r\n' + cube.name + ' Connected.');
         setButtonState(true);
     }
     catch (error)
@@ -83,7 +73,6 @@ function disconnect()
     {
         return;
     }
-    console.log('Disconnecting from cube.');
     if (cube.gatt.connected)
     {
         cube.gatt.disconnect();
@@ -103,7 +92,6 @@ function handleNotifications(event)
     let value = event.target.value;
 
     // Reverse Engineering
-
     /** 
     First Byte Indicates Outer Turn
     B  => 0
@@ -129,7 +117,6 @@ function handleNotifications(event)
     S  => 3
     S' => 2
     */
-
 
     const mask = [false, false, false, true, true, true, false, false];
     let arr = [];
