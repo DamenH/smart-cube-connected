@@ -35,3 +35,7 @@ A move can be clockwise or counter-clockwise. A single quote ' denotes this move
 Here is an example scramble.
 
 M2 U' R2 D' S M2 U M' U2 F2 D' S M2 U' R2 U'
+
+## Reverse Engineering
+
+Most of the work of the reverse engineering process can be found in the main.js file. To get the specific UUIDs and services being used, nRF Connect was used on an Android Phone.
