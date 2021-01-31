@@ -38,4 +38,6 @@ M2 U' R2 D' S M2 U M' U2 F2 D' S M2 U' R2 U'
 
 ## Reverse Engineering
 
-Most of the work of the reverse engineering process can be found in the main.js file. To get the specific UUIDs and services being used, nRF Connect was used on an Android Phone.
+Most of the work of the reverse engineering process can be found in the main.js file. To get the specific UUIDs and services being used, nRF Connect was used on an Android Phone. Once Notifications were being captured, the changes of data were found to be associated with different types of turns on the cube. By trial and error, all of the different movement types were associated with a specific bits of the broadcast notification, and then they were echo'd to the screen as Rubik's notation.
+
+Interestingly, the slice moves were only somtimes associated with a single move in the notification data. I eventially found that if the slice was performed quickly, it would be broadcast as a single move. Otherwise, it would be broadcast as 2 independent face moves. These types of turns, as well as double face moves, could be processed after the fact to better reflect the manipulations of the cube in proper move notation.
